@@ -1,20 +1,34 @@
 const path = require("path");
+const CracoLessPlugin = require("craco-less");
+const SimpleProgressWebpackPlugin = require("simple-progress-webpack-plugin");
 
 module.exports = {
   webpack: {
     configure: (webpackConfig, { env, paths }) => {
-      // paths.appPath='public'
       paths.appBuild = "docs";
       webpackConfig.output = {
         ...webpackConfig.output,
-        // ...{
-        //   filename: whenDev(() => 'static/js/bundle.js', 'static/js/[name].js'),
-        //   chunkFilename: 'static/js/[name].js'
-        // },
         path: path.resolve(__dirname, "docs"), // 修改输出文件目录
         publicPath: "/",
       };
       return webpackConfig;
     },
+    plugins: [
+      // 查看打包的进度
+      new SimpleProgressWebpackPlugin(),
+    ],
   },
+  plugins: [
+    {
+      plugin: CracoLessPlugin,
+      options: {
+        cssLoaderOptions: {
+          modules: {
+            auto: /\.m\.\w+$/i,
+            localIdentName: "[local]_[hash:base64:5]",
+          },
+        },
+      },
+    },
+  ],
 };
